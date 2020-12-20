@@ -56,7 +56,6 @@ public class UserRepositoryImpl implements UserRepository {
 		else {
 			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 	@Override
@@ -68,14 +67,14 @@ public class UserRepositoryImpl implements UserRepository {
 			while (result.next()) {
 				String login = result.getString(1);
 				String name = result.getString(2);
-				String userTypeString = result.getString(3);
+				String userTypeString = result.getString(4);
 				UserType userType = null;
 				for (Map.Entry entry : convertUserTypeForm.entrySet()) {
 					if (entry.getValue().equals(userTypeString)) {
 						userType = (UserType) entry.getKey();
 					}
 				}
-				Integer groupId = result.getInt(4);
+				Integer groupId = result.getInt(3);
 				String password = result.getString(5);
 				User user = new User(login, password, name, userType, groupId);
 				userList.add(user);

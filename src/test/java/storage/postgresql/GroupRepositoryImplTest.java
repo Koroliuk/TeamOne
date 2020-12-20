@@ -100,21 +100,18 @@ public class GroupRepositoryImplTest {
         Optional<Group> optionalGroup01 = Optional.of(new Group(1, "First Group", getUser("vasya092"),
                 getListOfUsers(List.of("vasya092", "dominar3000", "wqa092", "eeesya092"))));
         Optional<Group> optionalGroup02 = Optional.of(new Group(2, "Second Group", getUser("sssya092"),
-                getListOfUsers(List.of("dominat00", "wireas34", "va9rkw2", "sssya092"))));
+                getListOfUsers(List.of("sssya092", "dominat00", "wireas34", "va9rkw2"))));
         Optional<Group> optionalGroup03 = Optional.of(new Group(3, "Third Group", getUser("fsf1467"),
-                getListOfUsers(List.of("nsddw002", "port92", "kolya073", "fsf1467"))));
+                getListOfUsers(List.of("fsf1467", "nsddw002", "port92", "kolya073"))));
         Optional<Group> optionalGroup1 = repository.findGroupByName("First Group");
         Optional<Group> optionalGroup2 = repository.findGroupByName("Second Group");
         Optional<Group> optionalGroup3 = repository.findGroupByName("Third Group");
-
         assertEquals(optionalGroup1, optionalGroup01);
         assertEquals(optionalGroup2, optionalGroup02);
         assertEquals(optionalGroup3, optionalGroup03);
-
         Optional<Group> optionalGroup4 = repository.findGroupByName("IP-99");
         Optional<Group> optionalGroup5 = repository.findGroupByName("HONOR");
         Optional<Group> optionalGroup6 = repository.findGroupByName("JustGroup");
-
         assertEquals(optionalGroup4, Optional.empty());
         assertEquals(optionalGroup5, Optional.empty());
         assertEquals(optionalGroup6, Optional.empty());
@@ -140,9 +137,9 @@ public class GroupRepositoryImplTest {
         assertEquals(optionalGroup1, Optional.of(new Group(1, "First Group", getUser("vasya092"),
                 getListOfUsers(List.of("vasya092", "dominar3000", "wqa092", "eeesya092")))));
         assertEquals(optionalGroup2, Optional.of(new Group(2, "2 Group", getUser("sssya092"),
-                getListOfUsers(List.of("dominat00","wireas34","va9rkw2", "sssya092")))));
+                getListOfUsers(List.of("sssya092","dominat00","wireas34","va9rkw2")))));
         assertEquals(optionalGroup3, Optional.of(new Group(3, "3", getUser("fsf1467"),
-                getListOfUsers(List.of("nsddw002", "port92", "kolya073", "fsf1467")))));
+                getListOfUsers(List.of("fsf1467", "nsddw002", "port92", "kolya073")))));
 
         assertNotEquals(optionalGroup1, Optional.of(new Group(1, "Group", getUser("vasya092"),
                 getListOfUsers(List.of("vasya092", "dominar3000", "wqa092", "eeesya092")))));
@@ -171,10 +168,10 @@ public class GroupRepositoryImplTest {
                 "sssya092", "dominat00", "wireas34", "va9rkw2",
                 "fsf1467", "nsddw002", "port92", "kolya073");
         List<String> password = List.of("sdf323fs!F$@2f", "ssdfd23fsd@2f", "dsfhsfdh4","sdf34tgergf",
-                "12QW@asd","ssdfd23fs4yd@2f","dsfhsfgfdh4","sdsdfsertgf","123sacQW@asd","#$d123SA@dA2",
+                "sdf323fs!ht5F$@2f","ssdfd23fs4yd@2f","dsfhsfgfdh4","sdsdfsertgf","123sacQW@asd","#$d123SA@dA2",
                 "dsfhsfdh4","sdf34tgergf");
         List<String> names = List.of("Ivaniuk V.O.", "Naluvayko R.I.", "Pokolyuk W.K.", "Ivanko K.O.",
-                "NoName", "Nalutol R.I.", "Zelensky P.P.", "Ilonov K.E.", "Josepe S.A.",
+                "Ivator V.O.", "Nalutol R.I.", "Zelensky P.P.", "Ilonov K.E.", "Josepe S.A.",
                 "Naluvayko R.I.", "Pokolyuk W.K.", "Ivanko K.O.");
         List<UserType> userTypes = List.of(UserType.GROUP_HEAD, UserType.STUDENT, UserType.STUDENT, UserType.STUDENT,
                 UserType.GROUP_HEAD, UserType.STUDENT, UserType.STUDENT, UserType.STUDENT,

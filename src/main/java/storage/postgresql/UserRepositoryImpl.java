@@ -23,18 +23,11 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public User saveNewEntity(User entity) {
-		String statement = "INSERT INTO Users VALUES('" + entity.getLogin() +
-				"', '" + entity.getName() + "', '" + entity.getUserType() +
-				"', '" + entity.getGroupId() + "', '" + entity.getPassword() + "')";
+		String statement = "INSERT INTO Users(login, name, group_id, user_type, password_salt, password_hash) VALUES('"
+				+ entity.getLogin() + "', '" + entity.getName() + "', '" + entity.getGroupId() +
+				"', '" + entity.getUserType().toString().toLowerCase() + "', '" + entity.getPassword() + "', '" + entity.getPassword() + "')";
 		connector.executeStatement(statement);
-		ResultSet result = connector.executeStatement(statement);
-		try {
-			String login = result.getString(0);
-			entity.setLogin(login);
-			return entity;
-		} catch (SQLException exception) {
-			return null;
-		}
+		return entity;
 	}
 
 	@Override
@@ -63,6 +56,7 @@ public class UserRepositoryImpl implements UserRepository {
 		else {
 			return Optional.empty();
 		}
+		return Optional.empty();
 	}
 
 	@Override

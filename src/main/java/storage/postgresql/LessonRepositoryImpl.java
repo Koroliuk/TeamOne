@@ -1,7 +1,11 @@
 package storage.postgresql;
 
+import domain.Group;
 import domain.Lesson;
+import domain.User;
+import storage.GroupRepository;
 import storage.LessonRepository;
+import storage.UserRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,10 +16,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class LessonRepositoryImpl implements LessonRepository {
-	private Connector connector;
+	private final Connector connector;
+	private final UserRepository userRepository;
+	private final GroupRepository groupRepository;
 
-	public LessonRepositoryImpl(Connector connector) {
+	public LessonRepositoryImpl(Connector connector, UserRepository userRepository, GroupRepository groupRepository) {
 		this.connector = connector;
+		this.userRepository = userRepository;
+		this.groupRepository = groupRepository;
 	}
 
 	@Override
@@ -42,15 +50,21 @@ public class LessonRepositoryImpl implements LessonRepository {
 				String teacherLogin = lessonsSet.getString(8);
 
 				Map<String, Boolean> presentsForLesson = new HashMap<>();
-				Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, Integer.valueOf(groupId), teacherLogin, presentsForLesson);
 
-				String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
+				Optional<Group> group = groupRepository.findById(Integer.parseInt(groupId));
+				Optional<User> teacher = userRepository.findById(teacherLogin);
 
-				ResultSet presentSet = connector.executeStatement(getPresentsCommand);
-				while (presentSet.next()) {
-					lesson.addPresent(presentSet.getString(2));
+				if (group.isPresent() && teacher.isPresent()) {
+					Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, group.get(), teacher.get(), presentsForLesson);
+
+					String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
+
+					ResultSet presentSet = connector.executeStatement(getPresentsCommand);
+					while (presentSet.next()) {
+						lesson.addPresent(presentSet.getString(2));
+					}
+					lessons.add(lesson);
 				}
-				lessons.add(lesson);
 			}
 
 			lessonsSet.close();
@@ -86,17 +100,23 @@ public class LessonRepositoryImpl implements LessonRepository {
 
 
 				Map<String, Boolean> presentsForLesson = new HashMap<>();
-				Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, groupId, teacherLogin, presentsForLesson);
+
+				Optional<Group> group = groupRepository.findById(groupId);
+				Optional<User> teacher = userRepository.findById(teacherLogin);
+
+				if (group.isPresent() && teacher.isPresent()) {
+					Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, group.get(), teacher.get(), presentsForLesson);
 
 
-				String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
+					String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
 
-				ResultSet presentSet = connector.executeStatement(getPresentsCommand);
-				while (presentSet.next()) {
-					lesson.addPresent(presentSet.getString(2));
+					ResultSet presentSet = connector.executeStatement(getPresentsCommand);
+					while (presentSet.next()) {
+						lesson.addPresent(presentSet.getString(2));
+					}
+
+					lessons.add(lesson);
 				}
-
-				lessons.add(lesson);
 			}
 
 			return lessons;
@@ -110,7 +130,7 @@ public class LessonRepositoryImpl implements LessonRepository {
 		String statement = "INSERT INTO Lessons VALUES('" + entity.getLessonId() +
 				"', '" + entity.getDateTime() + "', '" + entity.getDescription() +
 				"', '" + entity.getHomework() + "', '" + entity.getDiscipline() +
-				"', '" + entity.getTeacher() + "', '" + entity.getGroup() + "')";
+				"', '" + entity.getTeacher().getLogin() + "', '" + entity.getGroup().getId() + "')";
 		ResultSet result = connector.executeStatement(statement);
 		try {
 			Integer id = result.getInt(0);
@@ -139,17 +159,28 @@ public class LessonRepositoryImpl implements LessonRepository {
 				String teacherLogin = lessonsSet.getString(7);
 
 				Map<String, Boolean> presentsForLesson = new HashMap<>();
-				Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, groupId, teacherLogin, presentsForLesson);
+
+				Optional<Group> group = groupRepository.findById(groupId);
+				Optional<User> teacher = userRepository.findById(teacherLogin);
+
+				Lesson lesson = null;
+				if (group.isPresent() && teacher.isPresent()) {
+					lesson = new Lesson(id, dateTime, description, discipline, homework, group.get(), teacher.get(), presentsForLesson);
 
 
-				String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
+					String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
 
-				ResultSet presentSet = connector.executeStatement(getPresentsCommand);
-				while (presentSet.next()) {
-					lesson.addPresent(presentSet.getString(1));
+					ResultSet presentSet = connector.executeStatement(getPresentsCommand);
+					while (presentSet.next()) {
+						lesson.addPresent(presentSet.getString(1));
+					}
 				}
 
-				return Optional.of(lesson);
+				if (lesson != null) {
+					return Optional.of(lesson);
+				} else {
+					return Optional.empty();
+				}
 			} catch (SQLException e) {
 				return Optional.empty();
 			}
@@ -182,16 +213,22 @@ public class LessonRepositoryImpl implements LessonRepository {
 				String teacherLogin = lessonsSet.getString(8);
 
 				Map<String, Boolean> presentsForLesson = new HashMap<>();
-				Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, groupId, teacherLogin, presentsForLesson);
 
-				String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
+				Optional<Group> group = groupRepository.findById(groupId);
+				Optional<User> teacher = userRepository.findById(teacherLogin);
 
-				ResultSet presentSet = connector.executeStatement(getPresentsCommand);
-				while (presentSet.next()) {
-					lesson.addPresent(presentSet.getString(2));
+				if (group.isPresent() && teacher.isPresent()) {
+					Lesson lesson = new Lesson(id, dateTime, description, discipline, homework, group.get(), teacher.get(), presentsForLesson);
+
+					String getPresentsCommand = String.format("Select * FROM Presents WHERE lesson_id = %s", id);
+
+					ResultSet presentSet = connector.executeStatement(getPresentsCommand);
+					while (presentSet.next()) {
+						lesson.addPresent(presentSet.getString(2));
+					}
+
+					lessons.add(lesson);
 				}
-
-				lessons.add(lesson);
 			}
 
 			lessonsSet.close();
@@ -220,14 +257,14 @@ public class LessonRepositoryImpl implements LessonRepository {
 		Integer id = entity.getLessonId();
 		String homework = entity.getHomework();
 		String discipline = entity.getDiscipline();
-		Integer groupId = entity.getGroup();
+		Group group = entity.getGroup();
 		String description = entity.getDescription();
-		String teacherLogin = entity.getTeacher();
+		User teacher = entity.getTeacher();
 
 		String updateLessonCommand = String.format("UPDATE Lessons SET date = date '%s', time = time '%s', homework = '%s', discipline = '%s', group_id = %s, description = '%s', teacher_login = '%s' WHERE id = %s",
-				date, time, homework, discipline, groupId, description, teacherLogin, id);
+				date, time, homework, discipline, group.getId(), description, teacher.getLogin(), id);
 
-		ResultSet resultSet = connector.executeStatement(updateLessonCommand);
+		connector.executeStatement(updateLessonCommand);
 
 		Map<String, Boolean> presents = entity.getIsPresent();
 
@@ -262,10 +299,10 @@ public class LessonRepositoryImpl implements LessonRepository {
 
 		ResultSet lesson = connector.executeStatement(existsLessonCommand);
 
-        try {
-        	return lesson.next();
+		try {
+			return lesson.next();
 		} catch (SQLException ex) {
-        	return false;
+			return false;
 		}
 	}
 }

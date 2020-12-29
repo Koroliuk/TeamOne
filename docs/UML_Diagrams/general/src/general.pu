@@ -37,7 +37,6 @@ usecase "<b>TC-3</b>\nСтворення певної зустрічі,\nщо п
 
 ' UCes for Admin:
 usecase "<b>AC-1,AC-2,AC-3</b>\nДодавання, редагування та видалення заняття до розкладу" as AC1_Admin
-usecase "<b>AC-4,AC-5,AC-6</b>\n"Додавання, редагування та видалення розкладу\nзанять у системі" as AC2_Admin
 usecase "<b>AC-7,AC-8,AC-9</b>\n"Додавання, редагування та видалення облікового запису" as AC3_Admin
 usecase "<b>AC-10,AC-11,AC-12</b>\n"Додавання, редагування та видалення групи користувачів" as AC4_Admin
 
@@ -67,7 +66,6 @@ Teacher -u-> TC2_Teacher
 Teacher -r--> TC3_Teacher
 
 Admin -l--> AC1_Admin
-Admin -d-> AC2_Admin
 Admin -d-> AC3_Admin
 Admin -r-> AC4_Admin
 
